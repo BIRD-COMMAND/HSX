@@ -1,1 +1,32 @@
-TEXT FILE
+trilaterion with object passing parameter
+
+(global real gps_tmp1 0)
+(global real gps_tmp2 0)
+(global real gps_tmp3 0)
+(global real gps_tmp4 0)
+(global real gps_x 0)
+(global real gps_y 0)
+(global real gps_z 0)
+(global object orbit none)
+
+(script static void (gps_trilateration (object target))
+  (set gps_tmp1 (objects_distance_to_flag target "gps1"))
+  (set gps_tmp2 (objects_distance_to_flag target "gps2"))
+  (set gps_tmp3 (objects_distance_to_flag target "gps3"))
+  (set gps_tmp4 (objects_distance_to_flag target "gps4"))
+  (set gps_tmp1 (* gps_tmp1 gps_tmp1))
+  (set gps_tmp2 (* gps_tmp2 gps_tmp2))
+  (set gps_tmp3 (* gps_tmp3 gps_tmp3))
+  (set gps_tmp4 (* gps_tmp4 gps_tmp4))
+  (set gps_tmp1 (+ gps_tmp1 (* gps_tmp2 -1) 1))
+  (set gps_tmp2 (- gps_tmp2 gps_tmp3))
+  (set gps_tmp3 (- gps_tmp3 gps_tmp4))
+  (set gps_x (/ gps_tmp1 2))
+  (set gps_y (/ (+ gps_tmp1 gps_tmp2) 2))
+  (set gps_z (/ (+ gps_tmp1 gps_tmp2 gps_tmp3) 2))
+)
+
+(script continuous gps
+  (gps_trilateration orbit)
+  (sleep 30)
+)
