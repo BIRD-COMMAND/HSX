@@ -1,4 +1,4 @@
-trilaterion with object passing parameter
+; Trilaterion with object passing parameter
 
 (global real gps_tmp1 0)
 (global real gps_tmp2 0)
