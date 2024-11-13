@@ -64,23 +64,22 @@
 
 	
 	(if (and (> dir_y 0) (> dir_x 0)) ; Top half-plane and First quadrant
-		(set heading (* 360.0 (/ dir_x (+ dir_x dir_y))))
+		(set heading (/ (* 90.0 dir_x) (+ dir_x dir_y))))
 	)
 	(if (and (> dir_y 0) (< dir_x 0)) ; Top half-plane and Second quadrant
-		(set heading (- 360.0 (* 360.0 (/ (* -1.0 dir_x) (+ (* -1.0 dir_x) dir_y)))))
+		(set heading (+ 90.0 (/ (* 90.0 (* -1.0 dir_x) (+ (* -1.0 dir_x) dir_y)))))
 	)
 	(if (and (< dir_y 0) (< dir_x 0)) ; Bottom half-plane and Third quadrant
-		(set heading (+ 180.0 (* 360.0 (/ (* -1.0 dir_x) (- (* -1.0 dir_x) dir_y)))))
+		(set heading (+ 180.0 (/ (* 90.0 (* -1.0 dir_x)) (- (* -1.0 dir_x) dir_y))))
 	)
 	(if (and (< dir_y 0) (> dir_x 0)) ; Bottom half-plane and Fourth quadrant
-		(set heading (- 180.0 (* 360.0 (/ dir_x (- dir_x dir_y)))))
+		(set heading (+ 270.0 (/ (* 90.0 dir_x) (- dir_x dir_y))))
 	)
 
 	; Ensure the angle is within the range [0, 360)
-	(if (>= heading 360)
-		(set heading (- heading 360))
+	(if (>= heading 360.0)
+		(set heading (- heading 360.0))
 	)
-
 )
 
 (script continuous compass_heading
