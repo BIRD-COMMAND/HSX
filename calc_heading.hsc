@@ -1,22 +1,22 @@
 ; temporary variables for the calculation
-(global real gps_tmp1 0)
-(global real gps_tmp2 0)
-(global real gps_tmp3 0)
-(global real gps_tmp4 0)
+(global real gps_tmp1 0.0)
+(global real gps_tmp2 0.0)
+(global real gps_tmp3 0.0)
+(global real gps_tmp4 0.0)
 ; holds the output coordinates
-(global real obj_x 0)
-(global real obj_y 0)
-(global real obj_z 0)
+(global real obj_x 0.0)
+(global real obj_y 0.0)
+(global real obj_z 0.0)
 ; holds temporary object coordinates
-(global real obj_a_x 0)
-(global real obj_a_y 0)
-(global real obj_b_x 0)
-(global real obj_b_y 0)
+(global real obj_a_x 0.0)
+(global real obj_a_y 0.0)
+(global real obj_b_x 0.0)
+(global real obj_b_y 0.0)
 ; holds the direction vector
-(global real dir_x 0)
-(global real dir_y 0)
+(global real dir_x 0.0)
+(global real dir_y 0.0)
 ; holds the calculated heading
-(global real heading 0)
+(global real heading 0.0)
 
 (script static void (get_obj_pos (object target))
   (set gps_tmp1 (objects_distance_to_flag target "gps1"))
@@ -39,9 +39,9 @@
 (script static void (compute_heading (object a) (object b))
 	
 	; reset all globals
-	(set dir_x 0)
-	(set dir_y 0)
-	(set heading 0)
+	(set dir_x 0.0)
+	(set dir_y 0.0)
+	(set heading 0.0)
 
 	; Get position of object A
 	(get_obj_pos a)
@@ -62,17 +62,18 @@
 	(if (= dir_x 0) (set dir_x 0.0001))
 	(if (= dir_y 0) (set dir_y 0.0001))
 
+	
 	(if (and (> dir_y 0) (> dir_x 0)) ; Top half-plane and First quadrant
-		(set heading (* 45 (/ dir_x (+ dir_x dir_y))))		
+		(set heading (* 360.0 (/ dir_x (+ dir_x dir_y))))		
 	)
 	(if (and (> dir_y 0) (< dir_x 0)) ; Top half-plane and Second quadrant
-		(set heading (+ 90 (* 45 (/ (- 0 dir_x) (- (- 0 dir_x) dir_y)))))
+		(set heading (- 360.0 (* 360.0 (/ (- 0.0 dir_x) (+ (- 0.0 dir_x) dir_y)))))
 	)
 	(if (and (< dir_y 0) (< dir_x 0)) ; Bottom half-plane and Third quadrant
-		(set heading (+ 180 (* 45 (/ (- 0 dir_x) (- (- 0 dir_x) dir_y)))))
+		(set heading (+ 180.0 (* 360.0 (/ (- 0.0 dir_x) (- (- 0.0 dir_x) dir_y)))))
 	)
 	(if (and (< dir_y 0) (> dir_x 0)) ; Bottom half-plane and Fourth quadrant
-		(set heading (+ 270 (* 45 (/ dir_x (- dir_x dir_y)))))
+		(set heading (- 180.0 (* 360.0 (/ dir_x (- dir_x dir_y)))))
 	)
 
 	; Ensure the angle is within the range [0, 360)
@@ -84,7 +85,7 @@
 
 (script continuous compass_heading
 	(print "Computing compass heading from player0 to player1:")
-	(compute_heading (list_get(players) 0) box1)
+	(compute_heading (ai_get_unit jump) box2)
 	(print "Compass Heading (degrees):")
 	(inspect heading)
 	(sleep 120)
